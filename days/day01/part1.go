@@ -7,7 +7,7 @@ import (
 	"strconv"
 )
 
-func Solve() int {
+func Part1() int {
 	file, err := os.Open("days/day01/input.txt")
 	if err != nil {
 		panic("Failed to open input file: " + err.Error())
