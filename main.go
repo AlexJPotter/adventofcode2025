@@ -7,6 +7,6 @@ import (
 )
 
 func main() {
-	solution := day03.Part1()
+	solution := day03.Part2()
 	fmt.Println("The solution is:", solution)
 }
