@@ -1,4 +1,4 @@
-// Package day03 contains solutions for the Day 1 problems
+// Package day03 contains solutions for the Day 3 problems
 package day03
 
 import (
