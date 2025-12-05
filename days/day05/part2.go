@@ -16,52 +16,27 @@ func rangesOverlap(r1 Range, r2 Range) bool {
 	return true
 }
 
-func min(x int64, y int64) int64 {
-	if x < y {
-		return x
-	}
-
-	return y
-}
-
-func max(x int64, y int64) int64 {
-	if x > y {
-		return x
-	}
-
-	return y
-}
-
 func mergeRanges(r1 Range, r2 Range) Range {
 	start := min(r1.Start, r2.Start)
 	end := max(r1.End, r2.End)
 	return Range{Start: start, End: end}
 }
 
-func dropAtIndex(ranges *[rangeCount]Range, rangesSize int, index int) {
-	for i := index; i < rangesSize; i++ {
-		ranges[i] = ranges[i+1]
-	}
-}
-
-func compactRanges(ranges *[rangeCount]Range, rangesSize int) int {
-	newRangesSize := rangesSize
-
-	for rightIndex := rangesSize - 1; rightIndex > 0; rightIndex-- {
+func compactRanges(ranges []Range) []Range {
+	for rightIndex := len(ranges) - 1; rightIndex > 0; rightIndex-- {
 		for leftIndex := 0; leftIndex < rightIndex; leftIndex++ {
 			leftRange := ranges[leftIndex]
 			rightRange := ranges[rightIndex]
 
 			if rangesOverlap(leftRange, rightRange) {
 				ranges[leftIndex] = mergeRanges(leftRange, rightRange)
-				newRangesSize -= 1
-				dropAtIndex(ranges, newRangesSize, rightIndex)
+				ranges = append(ranges[:rightIndex], ranges[rightIndex+1:]...)
 				break
 			}
 		}
 	}
 
-	return newRangesSize
+	return ranges
 }
 
 func Part2() int64 {
@@ -72,8 +47,7 @@ func Part2() int64 {
 
 	defer file.Close()
 
-	var ranges [rangeCount]Range
-	rangesSize := 0
+	ranges := make([]Range, 0, rangeCount)
 
 	scanner := bufio.NewScanner(file)
 
@@ -95,8 +69,7 @@ func Part2() int64 {
 				panic("Failed to parse end of range: " + endErr.Error())
 			}
 
-			ranges[lineIndex] = Range{Start: start, End: end}
-			rangesSize++
+			ranges = append(ranges, Range{Start: start, End: end})
 		}
 
 		if lineIndex >= rangeCount {
@@ -106,13 +79,9 @@ func Part2() int64 {
 		lineIndex++
 	}
 
-	rangesSize = compactRanges(&ranges, rangesSize)
+	ranges = compactRanges(ranges)
 
-	for index, r := range ranges {
-		if index >= rangesSize {
-			return solution
-		}
-
+	for _, r := range ranges {
 		solution += (r.End - r.Start) + 1
 	}
 

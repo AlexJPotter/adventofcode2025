@@ -15,7 +15,7 @@ type Range struct {
 	End   int64
 }
 
-func isFresh(ranges *[rangeCount]Range, id int64) bool {
+func isFresh(ranges []Range, id int64) bool {
 	for _, r := range ranges {
 		if id >= r.Start && id <= r.End {
 			return true
@@ -33,7 +33,7 @@ func Part1() int64 {
 
 	defer file.Close()
 
-	var ranges [rangeCount]Range
+	ranges := make([]Range, 0, rangeCount)
 
 	scanner := bufio.NewScanner(file)
 
@@ -55,7 +55,7 @@ func Part1() int64 {
 				panic("Failed to parse end of range: " + endErr.Error())
 			}
 
-			ranges[lineIndex] = Range{Start: start, End: end}
+			ranges = append(ranges, Range{Start: start, End: end})
 		}
 
 		if lineIndex > rangeCount {
@@ -64,7 +64,7 @@ func Part1() int64 {
 				panic("Failed to parse ID: " + idErr.Error())
 			}
 
-			if isFresh(&ranges, id) {
+			if isFresh(ranges, id) {
 				solution++
 			}
 		}
