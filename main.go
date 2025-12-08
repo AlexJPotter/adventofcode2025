@@ -3,10 +3,10 @@ package main
 import (
 	"fmt"
 
-	"ajp/aoc25/days/day06"
+	"ajp/aoc25/days/day07"
 )
 
 func main() {
-	solution := day06.Part2()
+	solution := day07.Part2()
 	fmt.Println("The solution is:", solution)
 }
